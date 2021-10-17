@@ -1,4 +1,4 @@
-
+ 
 
 
 
@@ -21,7 +21,8 @@ FROM	sale.staff A INNER JOIN SALE.orders B ON A.staff_id = B.staff_id
 
 
 SELECT	COUNT (DISTINCT A.staff_id) , COUNT (DISTINCT B.staff_id)
-FROM	sale.staff A LEFT JOIN SALE.orders B ON A.staff_id = B.staff_id
+FROM	sale.staff A 
+EFT JOIN SALE.orders B ON A.staff_id = B.staff_id
 
 
 
@@ -29,9 +30,16 @@ FROM	sale.staff A LEFT JOIN SALE.orders B ON A.staff_id = B.staff_id
 
 -- Hangi markada hangi kategoride kaçar ürün olduðu bilgisine ihtiyaç duyuluyor
 
+SELECT B.brand_id, B.brand_name, A.category_name, A.category_id
+FROM product.category A 
+CROSS JOIN product.brand B
+ORDER BY B.brand_name, A.category_name;
 
 
-
+SELECT B.brand_id, B.brand_name, A.category_name, A.category_id
+FROM product.brand B
+CROSS JOIN product.category A 
+ORDER BY A.category_name, B.brand_name;
 
 ----///////////----
 
@@ -41,9 +49,9 @@ FROM	sale.staff A LEFT JOIN SALE.orders B ON A.staff_id = B.staff_id
 -- Personelleri ve þeflerini listeleyin
 -- Çalýþan adý ve yönetici adý bilgilerini getirin
 
-
-
----------------- 
+SELECT A.first_name, A.last_name, B.first_name AS Manager_name 
+FROM sale.staff A 
+JOIN sale.staff B ON A.manager_id = B.staff_id
 
 
 
@@ -118,7 +126,9 @@ ORDER BY
 --bir sipariþin toplam net tutarýný getiriniz. (müþterinin sipariþ için ödediði tutar)
 --discount' ý ve quantity' yi ihmal etmeyiniz.
 
-
+SELECT order_id, sum((quantity*list_price)*(1-discount)) as total_order_price
+FROM sale.order_item
+GROUP BY order_id
 
 
 
@@ -209,5 +219,10 @@ ORDER BY
 -------brand, category, model_year sütunlarý için Rollup kullanarak total sales hesaplamasý yapýnýz.
 --üç sütun için 4 farklý gruplama varyasyonu incelemeye çalýþýnýz.
 
-
+SELECT	brand, category, Model_year, SUM(total_sales_price) AS total_sales_price
+FROM	sale.sales_summary
+GROUP BY
+		ROLLUP(brand,category,Model_Year)
+ORDER BY
+	brand, category, Model_Year
 
