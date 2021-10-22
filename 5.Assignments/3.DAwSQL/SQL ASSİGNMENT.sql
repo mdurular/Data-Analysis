@@ -25,24 +25,23 @@ CREATE TABLE Transactions(
 Sender_ID  int NOT NULL,
 Receiver_ID int NOT NULL ,
 Amount int NOT NULL ,
-Transaction_Date text NOT NULL)
+Transaction_Date date NOT NULL)
 
 
 INSERT INTO Transactions (Sender_ID  , Receiver_ID,  Amount, Transaction_Date)
-VALUES('55', '22', '500', '18-05-2021');
+VALUES('55', '22', '500', '20210518');
 INSERT INTO Transactions (Sender_ID  , Receiver_ID,  Amount, Transaction_Date)
-VALUES('11',	'33',	'350',	'19-05-2021');
+VALUES('11',	'33',	'350',	'20210519');
 INSERT INTO Transactions (Sender_ID  , Receiver_ID,  Amount, Transaction_Date)
-VALUES('22',	'11',	'650',	'19-05-2021');
+VALUES('22',	'11',	'650',	'20210519');
 INSERT INTO Transactions (Sender_ID  , Receiver_ID,  Amount, Transaction_Date)
-VALUES('22',	'33',	'900',	'20-05-2021');
+VALUES('22',	'33',	'900',	'20210520');
 INSERT INTO Transactions (Sender_ID  , Receiver_ID,  Amount, Transaction_Date)
-VALUES('33',	'11',	'500',	'21-05-2021');
+VALUES('33',	'11',	'500',	'20210521');
 INSERT INTO Transactions (Sender_ID  , Receiver_ID,  Amount, Transaction_Date)
-VALUES('33',	'22',	'750',	'21-05-2021');
+VALUES('33',	'22',	'750',	'20210521');
 INSERT INTO Transactions (Sender_ID  , Receiver_ID,  Amount, Transaction_Date)
-VALUES('11',	'44',	'300',	'22-05-2021');       
-
+VALUES('11',	'44',	'300',	'20210521');       
 
 --	Sum amounts for each sender (debits) and receiver (credits),
 
