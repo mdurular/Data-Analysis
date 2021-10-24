@@ -61,7 +61,8 @@ GROUP BY Adv_Type
 
 --3.Calculate Orders (Conversion) rates for each Advertisement Type by dividing by total count of actions casting as float by multiplying by 1.0.
 
-SELECT Adv_Type, 100/(Num_Action/Num_Order)*0.01 AS Conversion_Rate
+
+SELECT Adv_Type, ROUND(CAST( Num_Order as float)/CAST (Num_Action as float), 2)  AS Conversion_Rate
 FROM  (SELECT Adv_Type, Count(Action_m) As Num_Action, (SELECT Count(Action_m) FROM Actions WHERE Action_m = 'Order' AND Adv_Type = 'A' ) As Num_order 
 FROM Actions
 WHERE Adv_Type = 'A'
@@ -74,5 +75,3 @@ FROM Actions
 WHERE Adv_Type = 'B'
 GROUP BY Adv_Type
 ) New_table
-
-
