@@ -8,6 +8,16 @@
 
 --1. Join all the tables and create a new table called combined_table. (market_fact, cust_dimen, orders_dimen, prod_dimen, shipping_dimen)
 
+ select * into combined_table from 
+ 
+ (select A.Sales, A.Discount,A.Order_Quantity,A.Product_Base_Margin, B.*,C.*,D.*,E.*
+ from market_fact_new A
+ FULL OUTER JOIN orders_dimen_new B ON B.Ord_id = A.Ord_id
+  FULL OUTER JOIN prod_dimen_new C ON C.Prod_id = A.Prod_id
+  FULL OUTER JOIN cust_dimen_new D ON D.Cust_id = A.Cust_id
+  FULL OUTER JOIN shipping_dimen_new E ON E.Ship_id = A.Ship_id )  S ;
+
+ select * from combined_table
 
 
 
@@ -17,8 +27,10 @@
 
 --2. Find the top 3 customers who have the maximum count of orders.
 
-
-
+SELECT TOP 3 Cust_id , COUNT (Ord_id) AS total_order
+FROM combined_table
+GROUP BY Cust_id
+ORDER BY total_order DESC;
 
 
 --/////////////////////////////////
@@ -28,6 +40,11 @@
 --3.Create a new column at combined_table as DaysTakenForDelivery that contains the date difference of Order_Date and Ship_Date.
 --Use "ALTER TABLE", "UPDATE" etc.
 
+ALTER TABLE combined_table
+ADD DaysTakenForDelivery INT;
+
+UPDATE combined_table
+SET DaysTakenForDelivery = DATEDIFF(day, Order_Date, Ship_date)
 
 
 
@@ -38,7 +55,10 @@
 --Use "MAX" or "TOP"
 
 
-
+SELECT  TOP 1 Cust_id , Customer_Name, MAX(DaysTakenForDelivery) AS max_delivered
+FROM combined_table
+GROUP BY Cust_id , Customer_Name
+ORDER BY max_delivered DESC;
 
 --////////////////////////////////
 
@@ -47,9 +67,23 @@
 --5. Count the total number of unique customers in January and how many of them came back every month over the entire year in 2011
 --You can use such date functions and subqueries
 
+SELECT COUNT(DISTINCT Cust_id) AS num_of_cust
+FROM combined_table
+WHERE YEAR(Order_Date)=2011 AND MONTH(Order_Date)=1
 
 
-
+SELECT MONTH(Order_date) AS month_ord, COUNT(DISTINCT Cust_id) AS monthly_num_of_cust
+FROM combined_table
+WHERE cust_id IN 
+(
+SELECT Cust_id 
+FROM combined_table
+WHERE YEAR(Order_Date)=2011 
+AND MONTH(Order_Date)=1 
+)
+AND YEAR (Order_Date) = 2011
+GROUP BY MONTH(Order_date) 
+ORDER BY month_ord
 
 --////////////////////////////////////////////
 
