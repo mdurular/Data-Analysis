@@ -58,20 +58,6 @@ order by amount desc
 	order by most_amount desc;
 
 
-	select *
-from sale.staff
-where staff_id = 
-    (select staff_id
-    from sale.orders
-    where order_id =
-        (select new.order_id
-        from
-        (select top 1 oo.order_id, sum(oo.list_price * (1 - oo.discount) * oo.quantity) as amount
-        from sale.staff s join sale.orders o on s.staff_id=o.staff_id
-        join sale.order_item oo on oo.order_id=o.order_id
-        where o.order_date between '2018-01-01' and '2018-12-31'
-        group by oo.order_id
-        order by amount desc) as new))
 
 
 	
