@@ -67,10 +67,6 @@ ORDER BY max_delivered DESC;
 --5. Count the total number of unique customers in January and how many of them came back every month over the entire year in 2011
 --You can use such date functions and subqueries
 
-SELECT COUNT(DISTINCT Cust_id) AS num_of_cust
-FROM combined_table
-WHERE YEAR(Order_Date)=2011 AND MONTH(Order_Date)=1
-
 
 SELECT MONTH(Order_date) AS month_ord, COUNT(DISTINCT Cust_id) AS monthly_num_of_cust
 FROM combined_table
@@ -91,10 +87,34 @@ ORDER BY month_ord
 --6. write a query to return for each user the time elapsed between the first purchasing and the third purchasing, 
 --in ascending order by Customer ID
 --Use "MIN" with Window Functions
+ -- SOLUTÝON-1
+SELECT DISTINCT Cust_id,
+		Order_date,
+		dense_number,
+		FIRST_ORDER_DATE,
+		DATEDIFF(day, FIRST_ORDER_DATE, order_date) DAYS_ELAPSED
 
+FROM (SELECT Cust_id, Order_Date,
+			MIN (Order_Date) OVER (PARTITION BY Cust_id) FIRST_ORDER_DATE,
+			DENSE_RANK () OVER (PARTITION BY Cust_id ORDER BY Order_date) dense_number
+FROM combined_table) A
+WHERE	dense_number = 3
 
+ -- SOLUTÝON-2
 
+ WITH T1 AS
+ (SELECT Cust_id, Order_Date,
+			MIN (Order_Date) OVER (PARTITION BY Cust_id) FIRST_ORDER_DATE,
+			DENSE_RANK () OVER (PARTITION BY Cust_id ORDER BY Order_date) dense_number
+FROM combined_table)
 
+SELECT DISTINCT Cust_id,
+		Order_date,
+		dense_number,
+		FIRST_ORDER_DATE,
+		DATEDIFF(day, FIRST_ORDER_DATE, order_date) DAYS_ELAPSED
+FROM T1
+WHERE	dense_number = 3
 
 --//////////////////////////////////////
 
