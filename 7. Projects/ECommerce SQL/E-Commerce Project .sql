@@ -123,6 +123,23 @@ WHERE	dense_number = 3
 --Use CASE Expression, CTE, CAST AND such Aggregate Functions
 
 
+WITH T1 AS (
+SELECT Cust_id, 
+		SUM(CASE WHEN Prod_id = '11' THEN Order_Quantity ELSE 0 END) P11,
+		SUM(CASE WHEN Prod_id = '14' THEN Order_Quantity ELSE 0 END) P14,
+		SUM(Order_Quantity) TOTAL_PROD
+FROM combined_table
+GROUP BY Cust_id 
+HAVING 
+	    SUM(CASE WHEN Prod_id = '11' THEN Order_Quantity ELSE 0 END) >=1 AND
+		SUM(CASE WHEN Prod_id = '14' THEN Order_Quantity ELSE 0 END) >=1
+)
+SELECT Cust_id, P11, P14, TOTAL_PROD,
+	   ROUND(CAST( P11 as float)/CAST (TOTAL_PROD as float), 2) RATIO_P11,
+	   ROUND(CAST( P14 as float)/CAST (TOTAL_PROD as float), 2) RATIO_P14
+FROM T1
+ORDER BY Cust_id
+
 
 
 --/////////////////
