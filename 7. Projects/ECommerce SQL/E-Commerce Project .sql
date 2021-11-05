@@ -153,7 +153,17 @@ ORDER BY Cust_id
 --1. Create a view that keeps visit logs of customers on a monthly basis. (For each log, three field is kept: Cust_id, Year, Month)
 --Use such date functions. Don't forget to call up columns you might need later.
 
+CREATE VIEW customer_logs AS
 
+SELECT cust_id,
+				DATEPART(YEAR,Order_Date) AS [YEAR],
+				DATEPART(MONTH, Order_date) AS [MONTH]
+
+FROM combined_table
+
+
+SELECT * FROM customer_logs
+ORDER BY 1,2,3
 
 
 --//////////////////////////////////
@@ -163,9 +173,14 @@ ORDER BY Cust_id
 --Don't forget to call up columns you might need later.
 
 
+CREATE VIEW NUMBER_OF_VISIT AS
 
+SELECT Cust_id, [YEAR], [MONTH], COUNT(*) NUM_OF_LOG
+FROM customer_logs
+GROUP BY Cust_id, [YEAR],[MONTH]
 
-
+SELECT * FROM NUMBER_OF_VISIT
+ORDER BY 1,2,3
 
 --//////////////////////////////////
 
@@ -174,6 +189,14 @@ ORDER BY Cust_id
 --You can number the months with "DENSE_RANK" function.
 --then create a new column for each month showing the next month using the numbering you have made. (use "LEAD" function.)
 --Don't forget to call up columns you might need later.
+
+SELECT *,
+		LEAD(CURRENT_MONTH,1) OVER (PARTITION BY Cust_id ORDER BY CURRENT_MONTH) NEXT_VISIT_MONTH
+FROM
+(SELECT *,
+		DENSE_RANK () OVER(ORDER BY  [YEAR], [MONTH]) AS CURRENT_MONTH 
+FROM NUMBER_OF_VISIT) A
+
 
 
 
