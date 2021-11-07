@@ -1,7 +1,5 @@
 
 
---DAwSQL Session -8 
-
 --E-Commerce Project Solution
 
 
@@ -190,6 +188,7 @@ ORDER BY 1,2,3
 --then create a new column for each month showing the next month using the numbering you have made. (use "LEAD" function.)
 --Don't forget to call up columns you might need later.
 
+CREATE VIEW NEXT_VISIT AS
 SELECT *,
 		LEAD(CURRENT_MONTH,1) OVER (PARTITION BY Cust_id ORDER BY CURRENT_MONTH) NEXT_VISIT_MONTH
 FROM
@@ -207,9 +206,12 @@ FROM NUMBER_OF_VISIT) A
 --4. Calculate the monthly time gap between two consecutive visits by each customer.
 --Don't forget to call up columns you might need later.
 
+CREATE VIEW TIME_GAPS AS
 
+SELECT *, NEXT_VISIT_MONTH - CURRENT_MONTH AS TIME_GAPS			
+FROM NEXT_VISIT
 
-
+SELECT * From TIME_GAPS
 
 
 
@@ -222,11 +224,15 @@ FROM NUMBER_OF_VISIT) A
 --	Labeled as regular if the customer has made a purchase every month.
 --  Etc.
 
+SELECT *,
+		CASE WHEN AVG_TIME_GAP IS NULL THEN 'Churn'
+			WHEN AVG_TIME_GAP = 1 THEN 'Regular'
+			WHEN AVG_TIME_GAP > 1 THEN 'Irregular' END CUST_LABELS	
 
-
-
-
-
+FROM
+	(SELECT Cust_id, AVG(TIME_GAPS) AS AVG_TIME_GAP
+	FROM TIME_GAPS
+	GROUP BY Cust_id) A
 
 
 --/////////////////////////////////////
@@ -239,11 +245,13 @@ FROM NUMBER_OF_VISIT) A
 
 --Find month-by-month customer retention rate  since the start of the business.
 
-
 --1. Find the number of customers retained month-wise. (You can use time gaps)
 --Use Time Gaps
 
-
+SELECT *,  COUNT(Cust_id) OVER(PARTITION BY NEXT_VISIT_MONTH) RETENTITON_MONTH_WISE
+FROM TIME_GAPS 
+WHERE TIME_GAPS=1
+ORDER BY Cust_id, NEXT_VISIT_MONTH
 
 
 
