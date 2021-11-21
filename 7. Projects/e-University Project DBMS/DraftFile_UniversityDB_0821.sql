@@ -67,16 +67,23 @@
 
 --1. Test the credit limit constraint.
 
+INSERT INTO Course VALUES('Math', 50)
 
-
-
+/*Msg 547, Level 16, State 0, Line 70
+The INSERT statement conflicted with the CHECK constraint "check_credit". The conflict occurred in database "UNIVERSITY", table "dbo.Course", column 'Credit'.
+The statement has been terminated.
+ */
 
 
 --//////////////////////////////////
 
 --2. Test that you have correctly defined the constraint for the student counsel's region. 
 
+UPDATE Staff SET RegionID = 5 WHERE StaffID=1
 
+/* Msg 547, Level 16, State 0, Line 81
+The UPDATE statement conflicted with the FOREIGN KEY constraint "FK__Staff__RegionID__398D8EEE". The conflict occurred in database "UNIVERSITY", table "dbo.Region", column 'RegionID'.
+The statement has been terminated.*/
 
 
 
@@ -86,16 +93,22 @@
 
 --3. Try to set the credits of the History course to 20. (You should get an error.)
 
+UPDATE Course SET Credit = 20 WHERE Title='History'
 
-
+/*Msg 547, Level 16, State 0, Line 93
+The UPDATE statement conflicted with the CHECK constraint "check_credit". The conflict occurred in database "UNIVERSITY", table "dbo.Course", column 'Credit'.
+The statement has been terminated.*/ 
 
 
 --/////////////////////////////
 
 --4. Try to set the credits of the Fine Arts course to 30.(You should get an error.)
 
+UPDATE Course SET Credit = 30 WHERE Title='Fine Arts'
 
-
+/* Msg 547, Level 16, State 0, Line 107
+The UPDATE statement conflicted with the CHECK constraint "check_credit2". The conflict occurred in database "UNIVERSITY", table "dbo.Course".
+The statement has been terminated.*/
 
 
 --////////////////////////////////////
@@ -114,7 +127,7 @@
 
 --6. Try to set Tom Garden as counsel of Alec Hunter (You should get an error.)
 
-
+UPDATE student SET StaffID = 4 WHERE StudentID=1
 
 
 
